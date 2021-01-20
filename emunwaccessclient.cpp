@@ -56,10 +56,9 @@ bool EmuNWAccessClient::waitForReadyRead(int msecs)
     } else {
         QElapsedTimer t; t.start();
         int tmp = msecs;
-        while (_queue.empty()) {
-            _socket->waitForReadyRead(msecs);
+        while (_queue.empty() && tmp>0) {
+            _socket->waitForReadyRead(tmp);
             tmp = msecs-t.elapsed();
-            if (tmp<1) break;
         }
     }
     return !_queue.empty();
