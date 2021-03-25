@@ -1,3 +1,7 @@
+// EmuNWAccessClient-qt is a simple async qt implementation of EmuNWAccess Protocoll
+// Copyright 2021 black-sliver
+// Released under MIT license
+
 #include "emunwaccessclient.h"
 #include <QElapsedTimer>
 #include <QtEndian>
