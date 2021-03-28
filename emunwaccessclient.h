@@ -27,6 +27,8 @@ public:
 
         QMap<QString,QString> toMap() const;
         QList< QMap<QString,QString> > toMapList() const;
+        const QString& operator[](const QString& key);
+        bool contains(const QString& key);
 
         static Reply makeBinary(const QByteArray& binary, QString&& cmd);
         static Reply makeBinary(QByteArray&& binary, QString&& cmd);
@@ -35,6 +37,7 @@ public:
         static Reply makeInvalid();
     private:
         void parse();
+        QMap<QString,QString> _mapCache;
     };
 
     QString error() const;

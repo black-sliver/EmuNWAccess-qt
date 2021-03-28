@@ -345,3 +345,17 @@ void EmuNWAccessClient::Reply::parse()
         }
     }
 }
+const QString& EmuNWAccessClient::Reply::operator[](const QString& key)
+{
+    if (_mapCache.empty()) {
+        _mapCache = toMap();
+    }
+    return _mapCache[key];
+}
+bool EmuNWAccessClient::Reply::contains(const QString& key)
+{
+    if (_mapCache.empty()) {
+        _mapCache = toMap();
+    }
+    return _mapCache.contains(key);
+}
