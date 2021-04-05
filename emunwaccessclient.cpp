@@ -6,6 +6,11 @@
 #include <QElapsedTimer>
 #include <QtEndian>
 
+#include <QLoggingCategory>
+
+Q_LOGGING_CATEGORY(log_emunwaccessclient, "EmuNWAccessClient", QtCriticalMsg)
+#define cDebug() qCDebug(log_emunwaccessclient)
+
 EmuNWAccessClient::EmuNWAccessClient(QObject *parent) : QObject(parent)
 {
     _connected = false;
@@ -77,6 +82,7 @@ EmuNWAccessClient::Reply EmuNWAccessClient::readReply()
 }
 void EmuNWAccessClient::cmd(const QString &cmd, const QString &args)
 {
+    cDebug() << "Adding command to queue : " << cmd << args;
     _sent.enqueue(cmd);
     QByteArray buf = cmd.toUtf8();
     if (!args.isEmpty()) {
@@ -88,6 +94,7 @@ void EmuNWAccessClient::cmd(const QString &cmd, const QString &args)
 }
 void EmuNWAccessClient::cmd(const QString &cmd, const QString &args, const QByteArray &data)
 {
+    cDebug() << "Adding command to queue : " << cmd << args;
     _sent.enqueue(cmd);
     QByteArray buf = cmd.toUtf8();
     if (!args.isEmpty()) {
@@ -194,7 +201,7 @@ void EmuNWAccessClient::on_socket_errorOccured(QAbstractSocket::SocketError)
         emit connectError();
     }
     else {
-        qDebug() << "Socket Error:" << _socket->errorString();
+        cDebug() << "Socket Error:" << _socket->errorString();
         _socket->disconnectFromHost();
         _socket->waitForDisconnected(1);
         _connecting = false;
@@ -208,16 +215,17 @@ void EmuNWAccessClient::on_socket_readyRead()
     _buffer += _socket->readAll();
     while (!_buffer.isEmpty()) {
         if (_sent.empty()) {
-            qDebug() << "Reply without command";
+            cDebug() << "Reply without command";
             _lastError = "Protocol Error";
             _socket->disconnectFromHost();
             break;
         } else if (_buffer[0] == '\0') {
+            cDebug() << "Received binary reply";
             if (_buffer.length()<5) break; // need more data
             // try to parse binary reply
             quint32 len = qFromBigEndian<quint32>(_buffer.constData()+1);
             if (len>1*1024*1024*1024) {
-                qDebug() << "Received Binary >1GB";
+                cDebug() << "Received Binary >1GB";
                 _lastError = "Protocol Error";
                 _socket->disconnectFromHost();
             }
@@ -226,11 +234,12 @@ void EmuNWAccessClient::on_socket_readyRead()
             _buffer = _buffer.mid(5+len);
             emit readyRead();
         } else if (_buffer[0] == '\n') {
+            cDebug() << "Received ascii reply";
             // try to parse ascii reply
             int p = _buffer.indexOf("\n\n");
             if (p<0) {
                 if (_buffer.length()>1*1024*1024) {
-                    qDebug() << "Received Ascii >1MB";
+                    cDebug() << "Received Ascii >1MB";
                     _lastError = "Protocol Error";
                     _socket->disconnectFromHost();
                 }
@@ -240,7 +249,7 @@ void EmuNWAccessClient::on_socket_readyRead()
             _buffer = _buffer.mid(p+2);
             emit readyRead();
         } else {
-            qDebug() << "Protocol Error";
+            cDebug() << "Protocol Error";
             _lastError = "Protocol Error";
             _socket->disconnectFromHost();
             break;
