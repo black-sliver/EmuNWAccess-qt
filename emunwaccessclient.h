@@ -53,6 +53,7 @@ public:
 
     void cmd(const QString& cmd, const QString& args="");
     void cmd(const QString& cmd, const QString& args, const QByteArray& data);
+
     void cmdEmuInfo() { cmd("EMU_INFO"); }
     void cmdEmuStatus() { cmd("EMU_STATUS"); }
     void cmdEmuReset() { cmd("EMU_RESET"); }
@@ -78,6 +79,10 @@ public:
     void cmdCoreReadMemory(const QString& memory, int start=0, int len=-1);
     void cmdCoreReadMemory(const QString& memory, const QList< QPair<int,int> >& regions);
 
+    void cmdCoreWriteMemoryPrepare(const QString& memory, const QString& addrs, int len) { cmdPrepare("CORE_WRITE", memory+";"+addrs, len); }
+    void cmdCoreWriteMemoryPrepare(const QString& memory, QList< QPair<int,int> > regions);
+    void cmdCoreWriteMemoryData(const QByteArray& data);
+
 private:
     bool _connected;
     bool _connecting;
@@ -86,6 +91,10 @@ private:
     QByteArray _buffer;
     QQueue<Reply> _queue;
     QQueue<QString> _sent;
+
+protected:
+    void cmdPrepare(const QString& cmd, const QString& args, const int datalength);
+    void cmdData(const QByteArray& data);
 
 signals:
     void disconnected();

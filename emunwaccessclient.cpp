@@ -94,6 +94,13 @@ void EmuNWAccessClient::cmd(const QString &cmd, const QString &args)
 }
 void EmuNWAccessClient::cmd(const QString &cmd, const QString &args, const QByteArray &data)
 {
+    cmdPrepare(cmd, args, data.length());
+    cmdData(data);
+}
+
+void EmuNWAccessClient::cmdPrepare(const QString &cmd, const QString &args, const int datalength)
+{
+
     cDebug() << "Adding command to queue : " << cmd << args;
     _sent.enqueue(cmd);
     QByteArray buf = cmd.toUtf8();
@@ -104,8 +111,12 @@ void EmuNWAccessClient::cmd(const QString &cmd, const QString &args, const QByte
     buf += "\n";
     _socket->write(buf);
     uint8_t binhdr[] = {0,0,0,0,0};
-    qToBigEndian((uint32_t)data.length(), binhdr+1);
+    qToBigEndian((uint32_t)datalength, binhdr+1);
     _socket->write((const char*)binhdr,sizeof(binhdr));
+}
+
+void EmuNWAccessClient::cmdData(const QByteArray &data)
+{
     _socket->write(data);
 }
 
@@ -175,6 +186,23 @@ void EmuNWAccessClient::cmdCoreReadMemory(const QString& memory, const QList< QP
         s += toStringPreferHex(region.first) + ";" + toStringPreferDec(region.second);
     }
     cmdCoreReadMemory(memory, s);
+}
+
+void EmuNWAccessClient::cmdCoreWriteMemoryPrepare(const QString& memory, QList< QPair<int,int> > regions)
+{
+    QString s;
+    int len = 0;
+    for (auto& region : regions) {
+        if (!s.isEmpty()) s += ";";
+        s += toStringPreferHex(region.first) + ";" + toStringPreferDec(region.second);
+        if (region.second<0) throw;
+        len += region.second;
+    }
+    cmdCoreWriteMemoryPrepare(memory, s, len);
+}
+void EmuNWAccessClient::cmdCoreWriteMemoryData(const QByteArray& data)
+{
+    cmdData(data);
 }
 
 void EmuNWAccessClient::on_socket_connected()
