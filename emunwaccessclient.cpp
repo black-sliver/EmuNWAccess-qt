@@ -5,7 +5,7 @@
 #include "emunwaccessclient.h"
 #include <QElapsedTimer>
 #include <QtEndian>
-
+#include <QtGlobal>
 #include <QLoggingCategory>
 
 Q_LOGGING_CATEGORY(log_emunwaccessclient, "EmuNWAccessClient", QtCriticalMsg)
@@ -19,7 +19,11 @@ EmuNWAccessClient::EmuNWAccessClient(QObject *parent) : QObject(parent)
     _socket = new QTcpSocket(this);
     _socket->connect(_socket, &QAbstractSocket::connected, this, &EmuNWAccessClient::on_socket_connected);
     _socket->connect(_socket, &QAbstractSocket::disconnected, this, &EmuNWAccessClient::on_socket_disconnected);
+#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
     _socket->connect(_socket, &QAbstractSocket::errorOccurred, this, &EmuNWAccessClient::on_socket_errorOccured);
+#else
+    _socket->connect(_socket, QOverload<QAbstractSocket::SocketError>::of(&QAbstractSocket::error), this, &EmuNWAccessClient::on_socket_errorOccured);
+#endif
     _socket->connect(_socket, &QAbstractSocket::readyRead, this, &EmuNWAccessClient::on_socket_readyRead);
 }
 
