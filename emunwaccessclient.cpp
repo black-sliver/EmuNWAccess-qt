@@ -266,7 +266,6 @@ void EmuNWAccessClient::on_socket_readyRead()
             _buffer = _buffer.mid(5+len);
             emit readyRead();
         } else if (_buffer[0] == '\n') {
-            cDebug() << "Received ascii reply";
             // try to parse ascii reply
             int p = _buffer.indexOf("\n\n");
             if (p<0) {
@@ -277,6 +276,7 @@ void EmuNWAccessClient::on_socket_readyRead()
                 }
                 break; // need more data
             }
+            cDebug() << "Received ascii reply";
             _queue.enqueue(Reply::makeAscii(QString::fromUtf8(_buffer.left(p+2)), _sent.dequeue()));
             _buffer = _buffer.mid(p+2);
             emit readyRead();
