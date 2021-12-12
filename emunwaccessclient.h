@@ -70,6 +70,8 @@ public:
     void cmdCoreCurrentInfo() { cmd("CORE_CURRENT_INFO"); }
     void cmdCoreReset() { cmd("CORE_RESET"); }
     void cmdLoadCore(const QString& core="") { cmd("LOAD_CORE", core); }
+    void cmdSaveState(const QString& statePath) { cmd("SAVE_STATE", statePath);}
+    void cmdLoadState(const QString& statePath) { cmd("LOAD_STATE", statePath);}
     void cmdCoreMemories() { cmd("CORE_MEMORIES"); }
     void cmdCoreWriteMemory(const QString& memory, const QByteArray& data, const QString& addrs) { cmd("CORE_WRITE", addrs.isEmpty() ? memory : (memory+";"+addrs), data); }
     void cmdCoreWriteMemory(const QString& memory, const QByteArray& data, int start=0);
