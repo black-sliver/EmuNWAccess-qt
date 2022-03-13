@@ -54,13 +54,14 @@ public:
     void cmd(const QString& cmd, const QString& args="");
     void cmd(const QString& cmd, const QString& args, const QByteArray& data);
 
-    void cmdEmuInfo() { cmd("EMU_INFO"); }
-    void cmdEmuStatus() { cmd("EMU_STATUS"); }
-    void cmdEmuReset() { cmd("EMU_RESET"); }
-    void cmdEmuStop() { cmd("EMU_STOP"); }
-    void cmdEmuPause() { cmd("EMU_PAUSE"); }
-    void cmdEmuResume() { cmd("EMU_RESUME"); }
-    void cmdEmuReload() { cmd("EMU_RELOAD"); }
+    void cmdEmulatorInfo() { cmd("EMULATOR_INFO"); }
+    void cmdEmulationStatus() { cmd("EMULATION_STATUS"); }
+    void cmdEmulationReset() { cmd("EMULATION_RESET"); }
+    void cmdEmulationStop() { cmd("EMULATION_STOP"); }
+    void cmdEmulationPause() { cmd("EMULATION_PAUSE"); }
+    void cmdEmulationResume() { cmd("EMULATION_RESUME"); }
+    void cmdEmulationReload() { cmd("EMULATION_RELOAD"); }
+    void cmdMyNameIs(const QString &name) { cmd("MY_NAME_IS", name); }
     void cmdLoadGame(const QString &filename) { cmd("LOAD_GAME", filename); }
     void cmdGameInfo() { cmd("GAME_INFO"); }
     void cmdDebugBreak() { cmd("DEBUG_BREAK"); }
