@@ -82,7 +82,7 @@ public:
     void cmdCoreReadMemory(const QString& memory, int start=0, int len=-1);
     void cmdCoreReadMemory(const QString& memory, const QList< QPair<int,int> >& regions);
 
-    void cmdCoreWriteMemoryPrepare(const QString& memory, const QString& addrs, int len) { cmdPrepare("CORE_WRITE", memory+";"+addrs, len); }
+    void cmdCoreWriteMemoryPrepare(const QString& memory, const QString& addrs, int len) { bcmdPrepare("CORE_WRITE", memory+";"+addrs, len); }
     void cmdCoreWriteMemoryPrepare(const QString& memory, QList< QPair<int,int> > regions);
     void cmdCoreWriteMemoryData(const QByteArray& data);
 
@@ -96,8 +96,8 @@ private:
     QQueue<QString> _sent;
 
 protected:
-    void cmdPrepare(const QString& cmd, const QString& args, const int datalength);
-    void cmdData(const QByteArray& data);
+    void bcmdPrepare(const QString& cmd, const QString& args, const int datalength);
+    void bcmdData(const QByteArray& data);
 
 signals:
     void disconnected();

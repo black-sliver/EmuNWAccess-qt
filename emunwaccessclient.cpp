@@ -98,16 +98,16 @@ void EmuNWAccessClient::cmd(const QString &cmd, const QString &args)
 }
 void EmuNWAccessClient::bcmd(const QString &cmd, const QString &args, const QByteArray &data)
 {
-    cmdPrepare("b"+cmd, args, data.length());
-    cmdData(data);
+    bcmdPrepare(cmd, args, data.length());
+    bcmdData(data);
 }
 
-void EmuNWAccessClient::cmdPrepare(const QString &cmd, const QString &args, const int datalength)
+void EmuNWAccessClient::bcmdPrepare(const QString &cmd, const QString &args, const int datalength)
 {
 
     cDebug() << "Adding command to queue : " << cmd << args;
     _sent.enqueue(cmd);
-    QByteArray buf = cmd.toUtf8();
+    QByteArray buf = "b"+cmd.toUtf8();
     if (!args.isEmpty()) {
         buf += " ";
         buf += args.toUtf8();
@@ -119,7 +119,7 @@ void EmuNWAccessClient::cmdPrepare(const QString &cmd, const QString &args, cons
     _socket->write((const char*)binhdr,sizeof(binhdr));
 }
 
-void EmuNWAccessClient::cmdData(const QByteArray &data)
+void EmuNWAccessClient::bcmdData(const QByteArray &data)
 {
     _socket->write(data);
 }
@@ -206,7 +206,7 @@ void EmuNWAccessClient::cmdCoreWriteMemoryPrepare(const QString& memory, QList< 
 }
 void EmuNWAccessClient::cmdCoreWriteMemoryData(const QByteArray& data)
 {
-    cmdData(data);
+    bcmdData(data);
 }
 
 void EmuNWAccessClient::on_socket_connected()
