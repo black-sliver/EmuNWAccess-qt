@@ -52,7 +52,7 @@ public:
     Reply readReply();
 
     void cmd(const QString& cmd, const QString& args="");
-    void cmd(const QString& cmd, const QString& args, const QByteArray& data);
+    void bcmd(const QString& cmd, const QString& args, const QByteArray& data);
 
     void cmdEmulatorInfo() { cmd("EMULATOR_INFO"); }
     void cmdEmulationStatus() { cmd("EMULATION_STATUS"); }
@@ -74,7 +74,7 @@ public:
     void cmdSaveState(const QString& statePath) { cmd("SAVE_STATE", statePath);}
     void cmdLoadState(const QString& statePath) { cmd("LOAD_STATE", statePath);}
     void cmdCoreMemories() { cmd("CORE_MEMORIES"); }
-    void cmdCoreWriteMemory(const QString& memory, const QByteArray& data, const QString& addrs) { cmd("CORE_WRITE", addrs.isEmpty() ? memory : (memory+";"+addrs), data); }
+    void cmdCoreWriteMemory(const QString& memory, const QByteArray& data, const QString& addrs) { bcmd("CORE_WRITE", addrs.isEmpty() ? memory : (memory+";"+addrs), data); }
     void cmdCoreWriteMemory(const QString& memory, const QByteArray& data, int start=0);
     void cmdCoreWriteMemory(const QString& memory, const QByteArray& data, QList< QPair<int,int> >& regions);
     void cmdCoreWriteMemory(const QString& memory, const QList< QPair<int,QByteArray> >& regions);

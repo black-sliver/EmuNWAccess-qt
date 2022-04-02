@@ -96,9 +96,9 @@ void EmuNWAccessClient::cmd(const QString &cmd, const QString &args)
     buf += "\n";
     _socket->write(buf);
 }
-void EmuNWAccessClient::cmd(const QString &cmd, const QString &args, const QByteArray &data)
+void EmuNWAccessClient::bcmd(const QString &cmd, const QString &args, const QByteArray &data)
 {
-    cmdPrepare(cmd, args, data.length());
+    cmdPrepare("b"+cmd, args, data.length());
     cmdData(data);
 }
 
