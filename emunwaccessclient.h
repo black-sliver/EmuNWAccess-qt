@@ -53,6 +53,8 @@ public:
 
     void cmd(const QString& cmd, const QString& args="");
     void bcmd(const QString& cmd, const QString& args, const QByteArray& data);
+    void bcmdPrepare(const QString& cmd, const QString& args, const int datalength);
+    void bcmdData(const QByteArray& data);
 
     void cmdEmulatorInfo() { cmd("EMULATOR_INFO"); }
     void cmdEmulationStatus() { cmd("EMULATION_STATUS"); }
@@ -94,10 +96,6 @@ private:
     QByteArray _buffer;
     QQueue<Reply> _queue;
     QQueue<QString> _sent;
-
-protected:
-    void bcmdPrepare(const QString& cmd, const QString& args, const int datalength);
-    void bcmdData(const QByteArray& data);
 
 signals:
     void disconnected();
